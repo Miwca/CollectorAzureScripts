@@ -1,10 +1,17 @@
 ﻿[CmdletBinding()]
-param (
+param 
+(
+    [parameter(Mandatory=$false)]
 	[string]$path,
+    [parameter(Mandatory=$false)]
     [string]$storageAccountName,
+    [parameter(Mandatory=$false)]
     [string]$storageAccountKey,
+    [parameter(Mandatory=$false)]
     [string]$containerName,
+    [parameter(Mandatory=$false)]
 	[int]$SampleInterval,
+    [parameter(Mandatory=$false)]
 	[int]$MaxSamples
 )
 
