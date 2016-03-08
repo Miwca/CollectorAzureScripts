@@ -24,9 +24,21 @@ Param
     [parameter(Mandatory=$false)]
     [ValidateScript({if (($applicationSettings.Count -eq 0) -and ([string]::IsNullOrEmpty($_)))
                     {
+                        throw "If you're not gonna provide a hashtable you need to provide the FTP username."
+                    }})]
+    [string]$ftpUsername,
+    [parameter(Mandatory=$false)]
+    [ValidateScript({if (($applicationSettings.Count -eq 0) -and ([string]::IsNullOrEmpty($_)))
+                    {
                         throw "If you're not gonna provide a hashtable you need to provide the FTP password."
                     }})]
     [string]$ftpPassword,
+    [parameter(Mandatory=$false)]
+    [ValidateScript({if (($applicationSettings.Count -eq 0) -and ([string]::IsNullOrEmpty($_)))
+                    {
+                        throw "If you're not gonna provide a hashtable you need to provide the SMTP username."
+                    }})]
+    [string]$smtpUsername,
     [parameter(Mandatory=$false)]
     [ValidateScript({if (($applicationSettings.Count -eq 0) -and ([string]::IsNullOrEmpty($_)))
                     {
@@ -41,7 +53,7 @@ if ($applicatonSettings.Count -eq 0)
                         "WEBSITE_NODE_DEFAULT_VERSION" = "0.10.32";
 
                         "FtpsServer" = "ftp.collector.se";
-                        "FtpsUser" = "integration_eman";
+                        "FtpsUser" = $smtpUsername;
                         "FtpsPassword" = $ftpPassword;
                         "FtpsFactoringUser" = "Factoring";
                         "FtpsFactoringPassword" = "Fact5456";
@@ -56,7 +68,7 @@ if ($applicatonSettings.Count -eq 0)
                         "RegExp" = "^.*[.]*$";
 						"SmtpServer" = "smtp.sendgrid.net";
 						"SmtpPort" = "587";
-						"SmtpUser" = "azure_ad18f8165506345b082d8666d4bddf1f@azure.com";
+						"SmtpUser" = $smtpUsername;
 						"SmtpPass" = $smtpPassword;
 						"Recepient" = "prio.factoring@collectorbank.se";
     }
