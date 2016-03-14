@@ -16,33 +16,13 @@ param
 )
 
 $Guid = [Guid]::NewGuid()
-$FullPath = $InputData.FullPath
-$BlobName = $InputData.BlobName
-
-$BackgroundJob = {
-    Param(
-        [Guid]$Id,
-        [string]$FullPath,
-        [string]$BlobName,
-        [string]$StorageAccountName,
-        [string]$StorageAccountKey,
-        [string]$ContainerName,
-        [int]$SampleInterval,
-        [int]$MaxSamples
-    )
+$FullPath = "$($path)\MSMQ-INCOMING-$($guid).csv";
+$BlobName = "MSMQ-INCOMMING-$($env:COMPUTERNAME)-$($guid).csv";
     
-    $Data = Get-Counter -Counter "\MSMQ Service\Incoming Messages/sec" -SampleInterval $SampleInterval -MaxSamples $MaxSamples
-    Export-Counter -Path $FullPath -InputObject $Data -FileFormat csv -Force -ErrorAction Stop
+Import-Module Azure.Storage -Force -ErrorAction SilentlyContinue
 
-    $Ctx = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
-    Set-AzureStorageBlobContent -File $FullPath -Container $ContainerName -Blob $BlobName -Context $Ctx -ErrorAction Stop
-}
+$Data = Get-Counter -Counter "\MSMQ Service\Incoming Messages/sec" -SampleInterval $SampleInterval -MaxSamples $MaxSamples
+Export-Counter -Path $FullPath -InputObject $Data -FileFormat csv -Force -ErrorAction Stop
 
-Start-Job -ScriptBlock $BackgroundJob -ArgumentList $Guid, 
-                                                $FullPath, 
-                                                $BlobName, 
-                                                $storageAccountName, 
-                                                $storageAccountKey, 
-                                                $ContainerName, 
-                                                $SampleInterval, 
-                                                $MaxSamples
+$Ctx = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
+Set-AzureStorageBlobContent -File $FullPath -Container $ContainerName -Blob $BlobName -Context $Ctx -Force -ErrorAction Stop
