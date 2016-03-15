@@ -16,12 +16,12 @@ param
 )
 
 $Guid = [Guid]::NewGuid()
-$FullPath = "$($path)\MSMQ-INCOMING-$($guid).csv";
-$BlobName = "MSMQ-INCOMING-$($env:COMPUTERNAME)-$($guid).csv";
+$FullPath = "$($path)\MSMQ-OUTGOING-$($guid).csv";
+$BlobName = "MSMQ-OUTGOING-$($env:COMPUTERNAME)-$($guid).csv";
 
 Import-Module Azure.Storage -Force -ErrorAction SilentlyContinue
 
-$Data = Get-Counter -Counter "\MSMQ Service\Incoming Messages/sec" -SampleInterval $SampleInterval -MaxSamples $MaxSamples
+$Data = Get-Counter -Counter "\MSMQ Service\Outgoing Messages/sec" -SampleInterval $SampleInterval -MaxSamples $MaxSamples
 Export-Counter -Path $FullPath -InputObject $Data -FileFormat csv -Force -ErrorAction Stop
 
 $Ctx = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey
